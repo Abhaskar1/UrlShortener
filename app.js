@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const ShortUrl = require("./models/shorturl");
+
 mongoose
   .connect("mongodb://localhost:27017/urlshortener", {
     useNewUrlParser: true,
@@ -33,7 +34,9 @@ app.post("/shorturl", function (req, res) {
       if (err) {
         console.log(err);
       } else {
+        console.log(" CREATING");
         console.log(newUrl);
+        console.log("CREATED");
         res.redirect("/");
       }
     }
@@ -42,9 +45,13 @@ app.post("/shorturl", function (req, res) {
 app.get("/:shortUrl", function (req, res) {
   ShortUrl.findOne({ short: req.params.shortUrl }, function (err, shortUrl) {
     if (err) {
+      console.log("HERE");
       console.log(err);
     }
-    if (shortUrl == null) return res.sendStatus(404);
+    if (shortUrl == null) {
+      res.sendStatus(404);
+    }
+    console.log(shortUrl);
     shortUrl.clicks++;
     shortUrl.save();
     res.redirect(shortUrl.full);
